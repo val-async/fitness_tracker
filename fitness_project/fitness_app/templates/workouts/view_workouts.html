@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All workouts</title>
+</head>
+<body>
+    <h1>
+        <a href="{% url "home" %}"> Home </a>
+    </h1>
+    <div class="workout"> 
+        <h2> workouts </h2>
+        
+        <button>
+            <a href="{% url "create_workout" %}"> Create Routine</a>
+        </button>
+
+        {% for workout in workouts %}
+            <h3>
+                {{workout.split}} : 
+                <span> <a href="{% url "delete_workout" workout.id %}"> Remove </a></span>
+                <span> | </span>
+                <span> <a href="{% url "edit_workout_split" workout.id %}">update</a> </span>
+            </h3>
+            
+            <ul>
+                {% for exercise in workout.exercises.all  %}
+                    <li>
+                        {{exercise.exercise_name}} : {{exercise.exercise_sets}}
+                         <span><a href="{% url "exercise_delete" exercise.id %}"> R </a></span>
+                         <span> | </span>
+                         <span> <a href="{% url "update_exercise" exercise.id %}">E</a></span>
+                    </li>
+                {% endfor %} 
+                
+            </ul>
+
+            <button>
+                <a href="{% url "add_exercise_to_workout" workout.id%}"> Add exercise</a>
+            </button>
+
+            {% empty %}
+            <p> no workouts created yet </p>
+        
+            <p> would you like to : 
+                <a href="{% url "template_request" %}"> Request template </a>
+            </p>
+        {% endfor %}
+    </div>
+</body>
+</html>
