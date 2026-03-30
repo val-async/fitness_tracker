@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.models import User
+from django.contrib.auth import login,get_user_model
 from ..form import RegisterForm
 from django.contrib.auth.decorators import login_required
 
+User = get_user_model()
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     form = RegisterForm()
     if request.method == 'POST':
         form = RegisterForm(request.POST)

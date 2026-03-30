@@ -5,8 +5,8 @@
 {% block content %}
     <h1>Welcome : user</h1>
     
-    {% if  request.user.is_authenticated %}
-    <h2> welcome {{request.user}} </h2>
+    {% if  user.is_authenticated %}
+    <h2> welcome {{user}} </h2>
     
     {% else %}
     <div class="sign-up">

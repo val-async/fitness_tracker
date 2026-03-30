@@ -126,3 +126,4 @@ LOGIN_REDIRECT_URL = 'workout_view'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
+AUTH_USER_MODEL = 'fitness_app.User'

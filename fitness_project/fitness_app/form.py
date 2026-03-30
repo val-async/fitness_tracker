@@ -1,6 +1,8 @@
 from django import forms
 from .models import Exercise,Workout
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ExerciseForm(forms.ModelForm):
     class Meta:
@@ -39,8 +41,8 @@ class WorkoutTemplateForm(forms.Form):
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label='confirm password')
-    age = forms.IntegerField(widget=forms.NumberInput)
-    height = forms.IntegerField()
+    age = forms.FloatField(widget=forms.NumberInput)
+    height = forms.FloatField()
 
     class Meta:
         model = User

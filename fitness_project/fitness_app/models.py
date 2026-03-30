@@ -18,3 +18,6 @@ class Workout(models.Model):
     def __str__(self):
         return self.split
     
+class User(AbstractUser):
+    height = models.FloatField(null=True, blank=True)
+    age = models.IntegerField(null=True,blank=True)
