@@ -8,6 +8,8 @@
     <h1>
         <a href="{% url "home" %}"> Home </a>
     </h1>
+
+    <a href="{% url "profile" %}"> profile </a> <span>{{request.user}}</span>
     <div class="workout"> 
         <h2> workouts </h2>
         
@@ -92,6 +94,14 @@
             <button>
                 <a href="{% url "clear_all_workouts" %}"> Clear all workouts </a>
             </button>
+        </div>
+
+        <div>
+            <p> Logout </p>
+            <form action="{% url "logout" %}" method='post'>
+                 {% csrf_token %}
+                <button type="submit"> Logout </button>
+            </form>
         </div>
     </div>
 

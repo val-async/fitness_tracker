@@ -4,7 +4,23 @@
 
 {% block content %}
     <h1>Welcome : user</h1>
-   
+    
+    {% if  request.user.is_authenticated %}
+    <h2> welcome {{request.user}} </h2>
+    
+    {% else %}
+    <div class="sign-up">
+        <button>
+            <a href="{% url "register" %}"> sign up</a>
+        </button>
+
+        <span>
+            <button> 
+                <a href="{% url "login" %}"> Login</a>
+            </button>
+        </span>
+    </div>
+    {% endif %}
     <button>
         <a href="{% url "workout_view" %}"> View Workouts </a>
     </button>

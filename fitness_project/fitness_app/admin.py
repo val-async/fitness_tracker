@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Exercise,Workout
 
+
 class WorkoutAdmin(admin.ModelAdmin):
     filter_horizontal = ('exercises',)
     

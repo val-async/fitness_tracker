@@ -4,6 +4,9 @@ from ..models import Exercise,Workout
 from ..form import ExerciseForm,WorkoutForm,WorkoutTemplateForm
 from ..workout_templates import ppl_template,ul_template
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 
 #handle response messages
 def handle_response_message(request, message: str):
@@ -13,6 +16,7 @@ def handle_response_message(request, message: str):
     return response
 
 #view workout
+@login_required
 def workout_view(request):
     workouts = Workout.objects.all()
     return render(request,'workouts/view_workouts.html',{'workouts':workouts})

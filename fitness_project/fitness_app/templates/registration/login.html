@@ -1,0 +1,40 @@
+{% extends "fitness_app/layout.html" %}
+
+{% block title %} Login {% endblock title %}
+
+{% block content %}
+
+<h1> Login </h1>
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="hidden" name="next" value="{{ next }}">
+<input type="submit" value="login">
+
+</form>
+
+{# Assumes you set up the password_reset view in your URLconf #}
+{% comment %} <p><a href="{% url 'password_reset' %}">Lost password?</a></p> {% endcomment %}
+
+</form>
+
+
+
+{% endblock content %}

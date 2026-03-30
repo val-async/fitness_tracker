@@ -1,6 +1,7 @@
 from .models import Exercise,Workout
 import random
 from .exercise_list import chest_workouts,shoulder_workouts,tricep_workouts,back_workouts,bicep_workouts,leg_workouts,ab_workouts
+
 #templates
 # if 4 - ul ul, fb core fb cardio 
 # if 2 ul

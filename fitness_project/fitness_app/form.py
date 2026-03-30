@@ -1,5 +1,6 @@
 from django import forms
 from .models import Exercise,Workout
+from django.contrib.auth.models import User
 
 class ExerciseForm(forms.ModelForm):
     class Meta:
@@ -33,3 +34,23 @@ class WorkoutTemplateForm(forms.Form):
         3:3
     }
     desired_template = forms.ChoiceField(label='how many times a week do you want to workout',choices=pick_num) #initial=3 
+
+#registration form
+class RegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label='confirm password')
+    age = forms.IntegerField(widget=forms.NumberInput)
+    height = forms.IntegerField()
+
+    class Meta:
+        model = User
+        fields = ['username','password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError('Passwords do not match')
+        
+        return cleaned_data
