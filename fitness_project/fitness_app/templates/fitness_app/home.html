@@ -1,49 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
+{% extends "fitness_app/layout.html" %}
 
-<body>
+{% block title %} Home page{% endblock title %}
+
+{% block content %}
     <h1>Welcome : user</h1>
-
-    {% comment %} add new exercise {% endcomment %}
-    {% comment %} 
-    <button>
-        <a href="{% url "add_exercise" %}"> Add exercise (Test)</a>
-    </button> 
-    {% endcomment %}
    
     <button>
         <a href="{% url "workout_view" %}"> View Workouts </a>
     </button>
 
-    {% comment %} Testing purposes {% endcomment %}
-    <h1> ************************** Test ******************************** </h1>
-
-       <table>
-    {% for exercise in exercises %}
-        <tr> 
-            <td>
-                {{exercise.exercise_name}}
-            </td>
-            <td> 
-                {{exercise.exercise_sets}} sets
-            </td>
-            <td>
-                <button>
-                    <a href="{% url "exercise_delete" exercise.id %}">Remove exercise</a>
-                </button>
-            </td>
-            <td>
-                {{exercise.id}}
-            </td>
-        </tr>
-     {% endfor %}
-    </table>
-
-</body>
-</html>
+ 
+{% endblock content %}

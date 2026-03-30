@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create_workout</title>
-</head>
-<body>
+{% extends "fitness_app/layout.html" %}
+
+{% block title %} Create workouts{% endblock title %}
+
+{% block content %}
     
     <form action="" method="post">
         {% csrf_token %}
         {{form}}
         <button type="submit"> Create </button>
+        <a href="{% url "workout_view" %}"> cancel </a>
+
     </form>
-</body>
-</html>
+    
+{% endblock content %}

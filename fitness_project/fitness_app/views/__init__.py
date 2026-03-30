@@ -1,0 +1,3 @@
+from .home_views import Home
+from .exercise_views import add_exercise_to_workout,update_exercise_view,delete_exercise_view
+from .workout_views import workout_view,create_workout,edit_workout_split,delete_workout,template_request_view, clear_all_workouts

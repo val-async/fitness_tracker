@@ -1,0 +1,8 @@
+
+    <form hx-post="{% url "add_exercise_to_workout" workout.id %}" hx-target="#message_container">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit"> Add </button>
+        <a href="{% url "workout_view" %}"> cancel </a>
+
+    </form>

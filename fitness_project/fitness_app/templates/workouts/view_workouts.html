@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All workouts</title>
-</head>
-<body>
+{% extends "fitness_app/layout.html" %}
+
+{% block title %}workou view{% endblock title %}
+
+
+{% block content %}
+    
     <h1>
         <a href="{% url "home" %}"> Home </a>
     </h1>
@@ -19,26 +18,63 @@
         {% for workout in workouts %}
             <h3>
                 {{workout.split}} : 
-                <span> <a href="{% url "delete_workout" workout.id %}"> Remove </a></span>
-                <span> | </span>
-                <span> <a href="{% url "edit_workout_split" workout.id %}">update</a> </span>
+
+                <button hx-get="{% url "delete_workout" workout.id %}"
+                        hx-target="next span"
+                        hx-swap="innerHTML"> Remove
+                </button>
+                {% comment %} <span> </span>
+                <span> | </span> {% endcomment %}
+
+                <button hx-get="{% url "edit_workout_split" workout.id %}"
+                        hx-target="next span"
+                        hx-swap="innerHTML"> update
+                    </button>
+                    
+                {% comment %} <span> </span> {% endcomment %}
+
+                
+                    <button hx-get="{% url "add_exercise_to_workout" workout.id %}"
+                        hx-target="next span"
+                        hx-swap="innerHTML">
+                            
+                        Add exercise
+                    </button>
+
+                    <span id='add_exercise_to_workout_container'>
+
+                    </span>
             </h3>
             
             <ul>
                 {% for exercise in workout.exercises.all  %}
                     <li>
                         {{exercise.exercise_name}} : {{exercise.exercise_sets}}
-                         <span><a href="{% url "exercise_delete" exercise.id %}"> R </a></span>
+
+                        <button hx-get="{% url "exercise_delete" exercise.id %}"
+                            hx-target="next span"
+                            hx-swap="innerHTML"
+                            >R </a>
+                        </button>
+
+                        <span id="exercise_delete_container">
+
+                        </span>
                          <span> | </span>
-                         <span> <a href="{% url "update_exercise" exercise.id %}">E</a></span>
+
+                         <button hx-get="{% url "update_exercise" exercise.id %}"
+                                 hx-target='next span'
+                                 hx-swap="innerHTML">E
+                         </button>
+                         <span> 
+
+                         </span>
                     </li>
                 {% endfor %} 
                 
             </ul>
 
-            <button>
-                <a href="{% url "add_exercise_to_workout" workout.id%}"> Add exercise</a>
-            </button>
+          
 
             {% empty %}
             <p> no workouts created yet </p>
@@ -47,6 +83,16 @@
                 <a href="{% url "template_request" %}"> Request template </a>
             </p>
         {% endfor %}
+        
+
+
+            
+        <p> .</p>
+        <div>
+            <button>
+                <a href="{% url "clear_all_workouts" %}"> Clear all workouts </a>
+            </button>
+        </div>
     </div>
-</body>
-</html>
+
+{% endblock content %}

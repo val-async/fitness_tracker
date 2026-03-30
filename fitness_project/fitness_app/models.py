@@ -13,3 +13,7 @@ class Workout(models.Model):
     split = models.CharField(max_length=100)
     
     exercises = models.ManyToManyField(Exercise)
+
+    def __str__(self):
+        return self.split
+    

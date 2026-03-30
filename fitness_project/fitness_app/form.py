@@ -26,3 +26,10 @@ class WorkoutForm(forms.ModelForm):
         widgets = {
             'split': forms.TextInput(attrs={'placeholder': 'e.g push_day, upper '})
         }
+
+class WorkoutTemplateForm(forms.Form):
+    pick_num = {
+        2:2,
+        3:3
+    }
+    desired_template = forms.ChoiceField(label='how many times a week do you want to workout',choices=pick_num) #initial=3 
