@@ -1,16 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request Template</title>
-</head>
-<body>
-    
-    <form method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit"> Get template</button>
-    </form>
-</body>
-</html>
+{% extends "fitness_app/layout.html" %}
+
+{% block title %}Request Preset Routine — FitTracker{% endblock title %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+
+    {% comment %} NAVIGATION BACK LINK {% endcomment %}
+    <div class="mb-2">
+        <a href="{% url 'workout_view' %}" class="btn btn-ghost btn-xs text-base-content/60 font-bold">
+            ← Back to Routines
+        </a>
+    </div>
+
+    {% comment %} HEADER  {% endcomment %}
+    <div class="bg-base-100 p-6 rounded-box border border-base-300">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight">Routine Templates</h1>
+                <p class="text-xs text-base-content/60 mt-1">Select a verified preset to instantly populate your dashboard.</p>
+            </div>
+            {% comment %} Custom Request Modal Trigger  {% endcomment %}
+            <button class="btn btn-outline btn-sm font-bold" onclick="custom_request_modal.showModal()">
+                Request Custom Build
+            </button>
+        </div>
+    </div>
+
+    {% comment %} MAIN TEMPLATE GRID  {% endcomment %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% comment %} CARD 1: PUSH PULL LEGS {% endcomment %}
+        <div class="card bg-base-100 border border-base-300 rounded-box group">
+            <div class="card-body p-5 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h2 class="text-lg font-bold">Push / Pull / Legs</h2>
+                        <span class="text-xs text-base-content/50">3-Day Split (Highly Modifiable)</span>
+                    </div>
+                    <div class="badge badge-soft badge-primary font-bold text-xs">Popular</div>
+                </div>
+                
+                <p class="text-sm text-base-content/70 flex-grow">
+                    The classic classic hypertrophy routine. Isolates major muscle chains to optimize recovery and volume.
+                </p>
+
+                {% comment %} Exercise Preview List {% endcomment %}
+                <div class="bg-base-200 p-2.5 rounded-box text-xs space-y-1 my-3 border border-base-200">
+                    <div class="font-bold text-base-content/40 uppercase tracking-wider mb-1">Preview Days</div>
+                    <div class="flex justify-between"><span>Push (Chest/Shoulders/Tris)</span><span class="font-semibold">6 Ex.</span></div>
+                    <div class="flex justify-between"><span>Pull (Back/Biceps)</span><span class="font-semibold">6 Ex.</span></div>
+                    <div class="flex justify-between"><span>Legs (Quads/Hams/Calves)</span><span class="font-semibold">5 Ex.</span></div>
+                </div>
+
+                <div class="card-action mt-auto">
+                    <form action="{% url "template_request" %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="split" value="ppl">
+                        <button class="btn btn-primary btn-sm btn-block font-bold">Inject Template</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+         {% comment %} CARD 2: UPPER / LOWER {% endcomment %}
+        <div class="card bg-base-100 border border-base-300 rounded-box group">
+            <div class="card-body p-5 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h2 class="text-lg font-bold">Upper / Lower</h2>
+                        <span class="text-xs text-base-content/50">4-Day Split (Strength Focus)</span>
+                    </div>
+                </div>
+                
+                <p class="text-sm text-base-content/70 flex-grow">
+                    Great for balancing raw strength with athletic power. Perfect for intermediate lifters who hit plateaus.
+                </p>
+
+                <div class="bg-base-200 p-2.5 rounded-box text-xs space-y-1 my-3 border border-base-200">
+                    <div class="font-bold text-base-content/40 uppercase tracking-wider mb-1">Preview Days</div>
+                    <div class="flex justify-between"><span>Upper Body A</span><span class="font-semibold">5 Ex.</span></div>
+                    <div class="flex justify-between"><span>Lower Body A</span><span class="font-semibold">4 Ex.</span></div>
+                    <div class="flex justify-between"><span>Upper Body B</span><span class="font-semibold">5 Ex.</span></div>
+                </div>
+
+                <div class="card-action mt-auto">
+                   <form action="{% url "template_request" %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="split" value="ul">
+                        <button class="btn btn-primary btn-sm btn-block font-bold">Inject Template</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} CARD 3: FULL BODY {% endcomment %}
+        <div class="card bg-base-100 border border-base-300 rounded-box group">
+            <div class="card-body p-5 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h2 class="text-lg font-bold">Full Body Blitz</h2>
+                        <span class="text-xs text-base-content/50">3-Day Split (Time Saver)</span>
+                    </div>
+                </div>
+                
+                <p class="text-sm text-base-content/70 flex-grow">
+                    A heavy-hitting compound movement strategy for people with busy schedules. High intensity per session.
+                </p>
+
+                <div class="bg-base-200 p-2.5 rounded-box text-xs space-y-1 my-3 border border-base-200">
+                    <div class="font-bold text-base-content/40 uppercase tracking-wider mb-1">Preview Days</div>
+                    <div class="flex justify-between"><span>Full Body Session 1</span><span class="font-semibold">6 Ex.</span></div>
+                    <div class="flex justify-between"><span>Full Body Session 2</span><span class="font-semibold">6 Ex.</span></div>
+                    <div class="flex justify-between"><span>Full Body Session 3</span><span class="font-semibold">6 Ex.</span></div>
+                </div>
+
+                <div class="card-action mt-auto">
+                    <button class="btn btn-primary btn-sm btn-block font-bold">Inject Template</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% comment %} MODAL FOR CUSTOM REQUEST {% endcomment %}
+    <dialog id="custom_request_modal" class="modal">
+      <div class="modal-box bg-base-100 border border-base-300">
+        <h3 class="text-lg font-bold mb-1">Request Custom Routine</h3>
+        <p class="text-xs text-base-content/50 mb-4">Tell us what parameters you need and we will generate it.</p>
+        
+        <form method="POST" class="space-y-4">
+          {% csrf_token %}
+          
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text font-bold text-xs">Describe Your Goal</span></label>
+            <textarea class="textarea w-full" placeholder="e.g., I have limited equipment and want to focus on bodyweight pullups and dips." rows="4"></textarea>
+          </div>
+          
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text font-bold text-xs">Days Per Week</span></label>
+            <select class="select select-sm w-full">
+                <option>2 Days</option>
+                <option selected>3 Days</option>
+                <option>4 Days</option>
+                <option>5+ Days</option>
+            </select>
+          </div>
+          
+          <div class="modal-action flex justify-between mt-6">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="custom_request_modal.close()">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm font-bold">Send Request</button>
+          </div>
+        </form>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button>close</button></form>
+    </dialog>
+
+</div>
+{% endblock content %}

@@ -1,7 +1,9 @@
 
+<div class="partial-form-wrapper">
  <form hx-post="{% url "delete_workout" workout.id %}" hx-target="#message_container">
         {% csrf_token %}
         {{form}}
-        <button type="submit"> Remove </button>
-        <a href="{% url "workout_view" %}"> cancel </a>
+        <button type="submit" class="btn-remove"> Remove </button>
+        <a href="{% url "workout_view" %}" class="btn-cancel"> cancel </a>
 </form>
+</div>

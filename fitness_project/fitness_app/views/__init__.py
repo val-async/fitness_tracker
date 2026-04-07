@@ -1,5 +1,6 @@
 from .home_views import Home
-from .exercise_views import add_exercise_to_workout,update_exercise_view,delete_exercise_view
-from .workout_views import workout_view,create_workout,edit_workout_split,delete_workout,template_request_view, clear_all_workouts
+from .exercise_views import add_exercise_to_workout,update_exercise_view,delete_exercise_view,log_exercise
+from .workout_views import workout_view,create_workout,edit_workout_split,delete_workout,template_request_view, clear_all_workouts,log_workout
+from .cardio_views import add_cardio_to_workout,log_cardio
 
-from .user_views import register_view,profile_view
+from .user_views import register_view,profile_view,MyLoginView,dashboard_view,Profile_update_view

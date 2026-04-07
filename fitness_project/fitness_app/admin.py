@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exercise,Workout
+from .models import Exercise,Workout,ExerciseLogs,WorkoutSession,Cardio,CardioLogs
 
 
 class WorkoutAdmin(admin.ModelAdmin):
@@ -8,4 +8,5 @@ class WorkoutAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Exercise)
 admin.site.register(Workout,WorkoutAdmin)
+
 

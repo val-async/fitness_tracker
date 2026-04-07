@@ -1,0 +1,13 @@
+<div class="partial-form-wrapper">
+    <form hx-post="{% url "add_cardio_to_workout" workout.id %}" hx-target="#message_container">
+        <p> add cardio</p>
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" class="btn-add"> Add </button>
+
+        <button class="btn btn-secondary btn-xs btn-soft">
+            <a href="{% url "workout_view" %}"> cancel </a>
+        </button>
+
+    </form>
+</div>

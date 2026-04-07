@@ -1,15 +1,124 @@
 {% extends "fitness_app/layout.html" %}
 
-{% block title %} Create workouts{% endblock title %}
+{% block title %}Create Routine — FitTracker{% endblock title %}
 
 {% block content %}
+<div class="max-w-6xl mx-auto p-6">
     
-    <form action="" method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit"> Create </button>
-        <a href="{% url "workout_view" %}"> cancel </a>
+    {% comment %} NAVIGATION BACK LINK {% endcomment %}
+    <div class="mb-4">
+        <a href="{% url 'workout_view' %}" class="btn btn-ghost btn-xs text-base-content/60 font-bold">
+            ← Back to Routines
+        </a>
+    </div>
 
-    </form>
-    
+    {% comment %} MAIN GRID CONTAINER {% endcomment %}
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        
+        {% comment %} LEFT COLUMN: FORM RENDER{% endcomment %}
+        <div class="lg:col-span-3 bg-base-100 p-6 rounded-box border border-base-300 space-y-6">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight">Create New Routine</h1>
+                <p class="text-xs text-base-content/60 mt-1">Define your split parameters to build a baseline.</p>
+            </div>
+
+            <form action="" method="POST" class="space-y-4">
+                {% csrf_token %}
+
+                {{form}}
+                
+                <!-- FREQUENCY SELECTION -->
+                {% comment %} <div class="form-control">
+                    <label class="label pb-1">
+                        <span class="label-text font-bold text-xs">Target Frequency</span>
+                    </label>
+                    <select class="select w-full">
+                        <option disabled selected>Select frequency</option>
+                        <option>Once a week</option>
+                        <option>Twice a week</option>
+                        <option>Every other day</option>
+                    </select>
+                </div> {% endcomment %}
+
+                {% comment %} ACTION BUTTONS {% endcomment %}
+                <div class="flex gap-2 pt-4 border-t border-base-200">
+                    <button type="submit" class="btn btn-primary btn-sm flex-1 font-bold">
+                        Save and Continue
+                    </button>
+                    <a href="{% url 'workout_view' %}" class="btn btn-outline btn-sm font-bold">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        {% comment %} RIGHT COLUMN: LIVE CARD PREVIEW {% endcomment %}
+        <div class="lg:col-span-2 space-y-4">
+            
+            {% comment %} STICKY SIDEBAR {% endcomment %}
+            <div class="lg:sticky lg:top-6 space-y-4">
+                
+                {% comment %} Section Header {% endcomment %}
+                <div>
+                    <h2 class="text-sm font-bold text-base-content/70">Live Preview</h2>
+                    <p class="text-xs text-base-content/50">This is how it will look on your main stack</p>
+                </div>
+
+                {% comment %} SIMULATED DASHBOARD CARD {% endcomment %}
+                <div class="card bg-base-100 border border-base-300 rounded-box opacity-90">
+                    <div class="card-body p-5">
+                        
+                        {% comment %} Card Header Mock {% endcomment %}
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                {% comment %} TARGET ID FOR JS PREVIEW  {% endcomment %}
+                                <h2 id="preview_title" class="text-lg font-bold text-base-content">New Routine</h2>
+                                <div class="text-xs text-base-content/50">0 exercises added</div>
+                            </div>
+                            
+                            <div class="flex gap-1.5">
+                                <span class="badge badge-soft badge-primary badge-xs">Add</span>
+                                <span class="badge badge-soft badge-info badge-xs">Edit</span>
+                                <span class="badge badge-soft badge-error badge-xs">Del</span>
+                            </div>
+                        </div>
+
+                        {% comment %} Mock Empty Dropdown  {% endcomment %}
+                        <div class="bg-base-200 rounded-box p-3 border border-base-300">
+                            <div class="flex justify-between items-center text-xs cursor-pointer">
+                                <span class="font-bold text-base-content/60">View Exercises</span>
+                                <span>▼</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center py-4 text-xs text-base-content/40 mt-1">
+                            Exercises can be mapped dynamically after creating the container.
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} HELPER PROMPT {% endcomment %}
+                <div class="alert bg-base-200 border border-base-300 text-xs text-base-content/70">
+                    <div>
+                        <span class="font-bold">Next Steps:</span> Once you define your split name, you can populate it with movements directly from the routines overview list.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% comment %} MINI SCRIPT FOR LIVE PREVIEW {% endcomment %}
+<script>
+    function updatePreviewTitle(val) {
+        const preview = document.getElementById('preview_title');
+        if (val.trim() === '') {
+            preview.innerText = 'New Routine';
+        } else {
+            preview.innerText = val;
+        }
+    }
+</script>
 {% endblock content %}

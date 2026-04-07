@@ -1,0 +1,112 @@
+<div class="card bg-base-200 shadow-inner border border-base-content/5 mt-4 overflow-hidden">
+    <div class="p-4 bg-base-300/50 flex justify-between items-center border-b border-base-content/5">
+        <h4 class="text-xs font-black uppercase tracking-widest opacity-70">
+            Performance: {{ exercise.exercise_name }}
+        </h4>
+        {% comment %} <span class="badge badge badge-outline opacity-50">Side-by-Side View</span> {% endcomment %}
+    </div>
+
+    <form hx-post="{% url 'log_exercise' session_id exercise.id %}" hx-target="#message_container" class="p-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+    
+             {% comment %} NEW FORM  {% endcomment %}
+            <div class="w-full lg:w-1/2">
+                <div class="flex items-center gap-2 mb-4 text-primary">
+                    <svg xmlns="http://w3.org" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-primary">Current Input</span>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-primary/10 bg-base-100 shadow-lg">
+                    <table class="table table-sm w-full">
+                        <thead class="bg-primary/5">
+                            <tr class="text-[10px] uppercase text-primary/70">
+                                <th>Set</th>
+                                <th>Reps</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ formset.management_form }}
+                            {% for log_form in formset %}
+                            <tr class="border-base-content/5">
+                                <td class="font-bold text-xs opacity-50">
+                                    {{ log_form.id }}
+                                    {{ log_form.exercise }}
+                                    {{ log_form.num_set }}
+                                    Set {{ forloop.counter }}
+                                </td>
+                                <td>
+                                    {{ log_form.reps }}
+                                </td>
+                                <td>
+                                    {{ log_form.weight_kg }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+             {% comment %} DIVIDER {% endcomment %}
+            <div class="divider lg:divider-horizontal opacity-20">VS</div>
+
+            {% comment %} PREVIOUS LOG  {% endcomment %}
+            <div class="w-full lg:w-1/2">
+                <div class="flex items-center gap-2 mb-4 text-secondary">
+                    <svg xmlns="http://w3.org" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="text-[10px] font-black uppercase tracking-wider">Previous Session</span>
+                </div>
+
+                {% if previous_log %}
+                <div class="overflow-x-auto rounded-xl border border-base-content/5 bg-base-100">
+                    <table class="table table-sm w-full">
+                        <thead class="bg-base-200/50">
+                            <tr class="text-[10px] uppercase opacity-50">
+                                <th>Set</th>
+                                <th>Reps</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in previous_log %}
+                            <tr class="hover:bg-base-200/30 transition-colors border-base-content/5">
+                                <td class="font-bold text-xs opacity-50">Set {{ forloop.counter }}</td>
+                                <td class="font-mono text-sm text-secondary">{{ log.reps }}</td>
+                                <td class="font-mono text-sm text-secondary">{{ log.weight_kg }}<small>kg</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert bg-base-100 border-dashed border-2 border-base-content/10 py-8 flex flex-col gap-2">
+                    <span class="text-xs font-bold opacity-30 uppercase">No records found</span>
+                </div>
+                {% endif %}
+            </div>
+
+            
+        </div>
+
+         {% comment %} ACTIONS  {% endcomment %}
+        <div class="flex justify-end items-center gap-4 mt-8 pt-4 border-t border-base-content/5">
+            <a href="{% url 'log_workout' session.workout.id %}" class="btn btn-ghost btn-sm text-error font-bold">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary btn-sm px-8 font-black italic tracking-widest shadow-lg shadow-primary/20">
+                SAVE LOG
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Clean up form inputs to fit the table rows */
+    #log-exercise-form input {
+        @apply input input-ghost input-xs w-full text-center bg-base-200/50 focus:bg-base-100 focus:text-primary transition-all font-mono font-bold;
+    }
+</style>

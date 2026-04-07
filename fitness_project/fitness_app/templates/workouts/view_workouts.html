@@ -1,108 +1,239 @@
 {% extends "fitness_app/layout.html" %}
 
-{% block title %}workou view{% endblock title %}
-
+{% block title %}Workouts — FitTracker{% endblock title %}
 
 {% block content %}
+<div class="max-w-5xl mx-auto p-6 space-y-6">
     
-    <h1>
-        <a href="{% url "home" %}"> Home </a>
-    </h1>
-
-    <a href="{% url "profile" %}"> profile </a> <span>{{user}}</span>
-    <div class="workout"> 
-        <h2> workouts </h2>
-        
-        <button>
-            <a href="{% url "create_workout" %}"> Create Routine</a>
-        </button>
-
-        {% for workout in workouts %}
-            <h3>
-                {{workout.split}} : 
-
-                <button hx-get="{% url "delete_workout" workout.id %}"
-                        hx-target="next span"
-                        hx-swap="innerHTML"> Remove
-                </button>
-                {% comment %} <span> </span>
-                <span> | </span> {% endcomment %}
-
-                <button hx-get="{% url "edit_workout_split" workout.id %}"
-                        hx-target="next span"
-                        hx-swap="innerHTML"> update
-                    </button>
-                    
-                {% comment %} <span> </span> {% endcomment %}
-
-                
-                    <button hx-get="{% url "add_exercise_to_workout" workout.id %}"
-                        hx-target="next span"
-                        hx-swap="innerHTML">
-                            
-                        Add exercise
-                    </button>
-
-                    <span id='add_exercise_to_workout_container'>
-
-                    </span>
-            </h3>
-            
-            <ul>
-                {% for exercise in workout.exercises.all  %}
-                    <li>
-                        {{exercise.exercise_name}} : {{exercise.exercise_sets}}
-
-                        <button hx-get="{% url "exercise_delete" exercise.id %}"
-                            hx-target="next span"
-                            hx-swap="innerHTML"
-                            >R </a>
-                        </button>
-
-                        <span id="exercise_delete_container">
-
-                        </span>
-                         <span> | </span>
-
-                         <button hx-get="{% url "update_exercise" exercise.id %}"
-                                 hx-target='next span'
-                                 hx-swap="innerHTML">E
-                         </button>
-                         <span> 
-
-                         </span>
-                    </li>
-                {% endfor %} 
-                
-            </ul>
-
-          
-
-            {% empty %}
-            <p> no workouts created yet </p>
-        
-            <p> would you like to : 
-                <a href="{% url "template_request" %}"> Request template </a>
-            </p>
-        {% endfor %}
-        
-
-
-            
-        <p> .</p>
+    {% comment %} HEADER {% endcomment %}
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-base-100 p-6 rounded-box border border-base-300">
         <div>
-            <button>
-                <a href="{% url "clear_all_workouts" %}"> Clear all workouts </a>
-            </button>
+            <h1 class="text-2xl font-extrabold tracking-tight">Your Routines</h1>
+            <p class="text-xs text-base-content/60 mt-1">Manage your workout splits and exercises</p>
         </div>
-
-        <div>
-            <p> Logout </p>
-            <form action="{% url "logout" %}" method='post'>
-                 {% csrf_token %}
-                <button type="submit"> Logout </button>
-            </form>
+        
+        <div class="flex gap-2">
+            <a href="{% url 'create_workout' %}" class="btn btn-primary btn-sm font-bold">
+                + Create Routine
+            </a>
+            <a href="{% url 'clear_all_workouts' %}" class="btn btn-outline btn-error btn-sm font-bold">
+                Clear All
+            </a>
         </div>
     </div>
 
+    {% comment %} WORKOUTS GRID {% endcomment %}
+    <div class="space-y-4">
+        {% for workout in workouts %}
+            <div class="card bg-base-100 border border-base-300 rounded-box">
+                <div class="card-body p-5">
+                    
+                    {% comment %} Card Header: Title & Master Controls {% endcomment %}
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-base-content">{{ workout.split|title }}</h2>
+                            <div class="text-xs text-base-content/50">
+                                {% if workout.focus == 'cardio' %}
+                                    {{workout.cardio.all.count}} cardio sessions added
+                                {% else %}
+                                    {{ workout.exercises.all.count }} exercises added
+                                {% endif %}
+                                </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-1.5">
+
+                            {% comment %} log workout  {% endcomment %}
+                            <a href="{% url "log_workout" workout.id %}" class="btn btn-soft btn-accent btn-xs font-semibold"> Log workout </a>
+                    
+                            {% comment %} HTMX: Add Exercise {% endcomment %}
+                             {% if workout.focus == 'cardio' %}
+                                <button hx-get="{% url 'add_cardio_to_workout' workout.id %}"
+                                    hx-target="#add_exercise_container_{{ workout.id }}"
+                                    hx-swap="innerHTML"
+                                    hx-on:click="document.getElementById('edit_split_container_{{ workout.id }}').innerHTML = ''; document.getElementById('delete_workout_container_{{ workout.id }}').innerHTML = '';"
+                                    class="btn btn-soft btn-success btn-xs font-semibold">
+                                + Add cardio
+                            </button>
+                            {% else %}
+                            <button hx-get="{% url 'add_exercise_to_workout' workout.id %}"
+                                    hx-target="#add_exercise_container_{{ workout.id }}"
+                                    hx-swap="innerHTML"
+                                    hx-on:click="document.getElementById('edit_split_container_{{ workout.id }}').innerHTML = ''; document.getElementById('delete_workout_container_{{ workout.id }}').innerHTML = '';"
+                                    class="btn btn-soft btn-primary btn-xs font-semibold">
+                                + Add Exercise
+                            </button>
+                             {% endif %}
+                            
+                            {% comment %} HTMX: Update Split {% endcomment %}
+                            <button hx-get="{% url 'edit_workout_split' workout.id %}"
+                                    hx-target="#edit_split_container_{{ workout.id }}"
+                                    hx-swap="innerHTML"
+                                    hx-on:click="document.getElementById('add_exercise_container_{{ workout.id }}').innerHTML = ''; document.getElementById('delete_workout_container_{{ workout.id }}').innerHTML = '';"
+                                    class="btn btn-soft btn-info btn-xs font-semibold">
+                                Edit Title
+                            </button>
+
+                            {% comment %} HTMX: Delete Workout {% endcomment %}
+                            <button hx-get="{% url 'delete_workout' workout.id %}" 
+                                    hx-target="#delete_workout_container_{{ workout.id }}"
+                                    hx-swap="innerHTML"
+                                    hx-on:click="document.getElementById('add_exercise_container_{{ workout.id }}').innerHTML = ''; document.getElementById('edit_split_container_{{ workout.id }}').innerHTML = '';"
+                                    class="btn btn-soft btn-error btn-xs font-semibold">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    {% comment %} Dynamic HTMX Targets for Workout Actions {% endcomment %}
+                    <div id="edit_split_container_{{ workout.id }}"></div>
+                    <div id="delete_workout_container_{{ workout.id }}"></div>
+                    <div id="add_exercise_container_{{ workout.id }}" class="mb-2"></div>
+
+                    {% comment %} COLLAPSIBLE CARDIO DROPDOWN (PURE CSS)  {% endcomment %}
+                    {% comment %} if cardio  {% endcomment %}
+                    {% if workout.focus == 'cardio'%}
+                    <details class="group bg-base-200 rounded-box border border-base-300 open:border-primary/30 transition-all duration-300">
+                        {% comment %} Summary acts as the trigger button bar {% endcomment %}
+                        <summary class="flex justify-between items-center p-3 cursor-pointer list-none">
+                            <span class="text-sm font-bold text-base-content/70">View cardio</span>
+                            {% comment %} Rotating Arrow Icon {% endcomment %}
+                            <span class="transition-transform duration-300 group-open:rotate-180 text-xs">▼</span>
+                        </summary>
+                        
+                        {% comment %} Collapsible Content {% endcomment %}
+                        <div class="p-3 pt-1">
+                            {% if workout.cardio %}
+                                <div class="space-y-2">
+                                    {% for cardio in workout.cardio.all %}
+                                        <div class="flex justify-between items-center bg-base-100 p-2.5 rounded-md border border-base-200 text-sm">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-medium">{{ cardio.cardio_type }}</span>
+                                                {% comment %} <div class="badge badge-soft badge-sm font-semibold">{{ exercise.exercise_sets }} Sets</div> {% endcomment %}
+                                            </div>
+                                            
+                                            {% comment %} Inline Action Controls {% endcomment %}
+                                            <div class="flex items-center gap-1.5">
+                                                {% comment %} HTMX: Edit Cardio  {% endcomment %}
+                                                {% comment %} Added: Custom hx-on clicks that clear adjacent containers {% endcomment %}
+                                                <button hx-get="{% url 'update_cardio' cardio.id %}"
+                                                        hx-target="#cardio_edit_{{ cardio.id }}"
+                                                        hx-swap="innerHTML"
+                                                        hx-on:click="document.getElementById('cardio_delete_{{ cardio.id }}').innerHTML = '';"
+                                                        class="btn btn-ghost btn-xs text-info font-bold">
+                                                    Edit
+                                                </button>
+                                                
+                                                <span class="text-base-content/30 text-xs">|</span>
+
+                                                {% comment %} HTMX: Delete cardio {% endcomment %}
+                                                <button hx-get="{% url 'cardio_delete' cardio.id %}"
+                                                        hx-target="#cardio_delete_{{ cardio.id }}"
+                                                        hx-swap="innerHTML"
+                                                        hx-on:click="document.getElementById('cardio_edit_{{ cardio.id }}').innerHTML = '';"
+                                                        class="btn btn-ghost btn-xs text-error font-bold">
+                                                    Del
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {% comment %} Dynamic HTMX Targets for cardio Actions {% endcomment %}
+                                        <div id="cardio_edit_{{ cardio.id }}"></div>
+                                        <div id="cardio_delete_{{ cardio.id }}"></div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-2 text-xs text-base-content/40">
+                                    No exercises added to this split yet.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </details>
+                    {% else %}
+                    {% comment %} if focus is strength/hyperthrophy  {% endcomment %}
+                    {% comment %} COLLAPSIBLE EXERCISES DROPDOWN (PURE CSS)  {% endcomment %}
+                    <details class="group bg-base-200 rounded-box border border-base-300 open:border-primary/30 transition-all duration-300">
+                        {% comment %} Summary acts as the trigger button bar {% endcomment %}
+                        <summary class="flex justify-between items-center p-3 cursor-pointer list-none">
+                            <span class="text-sm font-bold text-base-content/70">View Exercises</span>
+                            {% comment %} Rotating Arrow Icon {% endcomment %}
+                            <span class="transition-transform duration-300 group-open:rotate-180 text-xs">▼</span>
+                        </summary>
+                        
+                         {% comment %} Collapsible Content {% endcomment %}
+                        <div class="p-3 pt-1">
+                            {% if workout.exercises.all %}
+                                <div class="space-y-2">
+                                    {% for exercise in workout.exercises.all %}
+                                        <div class="flex justify-between items-center bg-base-100 p-2.5 rounded-md border border-base-200 text-sm">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-medium">{{ exercise.exercise_name }}</span>
+                                                <div class="badge badge-soft badge-sm font-semibold">{{ exercise.exercise_sets }} Sets</div>
+                                            </div>
+                                            
+                                            {% comment %} Inline Action Controls {% endcomment %}
+                                            <div class="flex items-center gap-1.5">
+                                                {% comment %} HTMX: Edit Exercise {% endcomment %}
+                                                {% comment %} Added: Custom hx-on clicks that clear adjacent containers  {% endcomment %}
+                                                <button hx-get="{% url 'update_exercise' exercise.id %}"
+                                                        hx-target="#exercise_edit_{{ exercise.id }}"
+                                                        hx-swap="innerHTML"
+                                                        hx-on:click="document.getElementById('exercise_delete_{{ exercise.id }}').innerHTML = '';"
+                                                        class="btn btn-ghost btn-xs text-info font-bold">
+                                                    Edit
+                                                </button>
+                                                
+                                                <span class="text-base-content/30 text-xs">|</span>
+
+                                                {% comment %} HTMX: Delete Exercise {% endcomment %}
+                                                <button hx-get="{% url 'exercise_delete' exercise.id %}"
+                                                        hx-target="#exercise_delete_{{ exercise.id }}"
+                                                        hx-swap="innerHTML"
+                                                        hx-on:click="document.getElementById('exercise_edit_{{ exercise.id }}').innerHTML = '';"
+                                                        class="btn btn-ghost btn-xs text-error font-bold">
+                                                    Del
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {% comment %} Dynamic HTMX Targets for Exercise Actions {% endcomment %}
+                                        <div id="exercise_edit_{{ exercise.id }}"></div>
+                                        <div id="exercise_delete_{{ exercise.id }}"></div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-2 text-xs text-base-content/40">
+                                    No exercises added to this split yet.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </details>
+                    {% endif %} {% comment "" %} end exercise dropdown{% endcomment %}
+                </div>
+            </div>
+
+
+        {% empty %}
+            {% comment %} Empty State Card {% endcomment %}
+            <div class="card bg-base-100 border border-base-300 rounded-box text-center py-12">
+                <div class="card-body items-center">
+                    <span class="text-3xl mb-2">📋</span>
+                    <h2 class="text-xl font-bold">No Workouts Created Yet</h2>
+                    <p class="text-sm text-base-content/60 mb-6 max-w-sm">
+                        You haven't added any fitness routines to your profile yet. Start by creating a manual split or requesting a preset template.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <a href="{% url 'create_workout' %}" class="btn btn-primary btn-sm font-bold">
+                            Create Routine
+                        </a>
+                        <a href="{% url 'template_request' %}" class="btn btn-outline btn-sm font-bold">
+                            Request Template
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+</div>
 {% endblock content %}

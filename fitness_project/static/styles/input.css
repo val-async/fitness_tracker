@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+
+/* @plugin "daisyui"; */
+
+@source not "./tailwindcss";
+@source not "./daisyui{,*}.mjs";
+/* @source not "./daisyui*.mjs"; */
+/* @source "../../templates*.html"; */
+@source "../../../**/*.html";
+
+/* @reference 'tailwindcss' */
+
+/* @plugin "./daisyui.mjs"; */
+
+@plugin "./daisyui.mjs" {
+  /* themes: light --default, dark --prefersdark, dracula; */
+  themes: all;
+}
+@layer components {
+  /* Style all text inputs inside your forms */
+  form input[type="text"], 
+  form input[type="email"], 
+  form input[type="password"],
+  form input[type="number"] {
+    @apply input  w-full mb-4;
+  }
+
+  /* Style all textareas */
+  form textarea {
+    @apply textarea  w-full mb-4;
+  }
+
+  /* Style standard dropdown selects */
+  form select {
+    @apply select  w-full mb-4;
+  }
+}
+
+@utility partial-form-wrapper{
+    @apply mb-7 p-3 bg-base-100 rounded-box w-full max-w-sm glass;
+}
+
+@utility btn-add{
+    @apply btn btn-accent btn-xs btn-soft btn-wide;
+}
+
+@utility btn-cancel{
+    @apply btn btn-secondary btn-xs btn-soft;
+}
+
+@utility btn-remove{
+    @apply btn btn-error btn-xs btn-soft;
+}
+
+@utility btn-update{
+    @apply btn btn-info btn-xs btn-soft
+}

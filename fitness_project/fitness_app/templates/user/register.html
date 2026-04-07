@@ -3,12 +3,14 @@
 {% block title %} register {% endblock title %}
 
 {% block content %}
-
-<form action="" method="post">
-    {% csrf_token %}
-    {{form}}
-    <button type="submit"> Register </button>
-</form>
+<div class="register_container w-full max-w-2xl mx-auto mt-10 p-6 bg-base-200 rounded-box">
+    <form action="" method="post">
+        {% csrf_token %}
+        
+        {{ form.as_p}}
+        <button type="submit" class="btn btn-primary" > Register </button>
+    </form>
+</div>
 
 
 

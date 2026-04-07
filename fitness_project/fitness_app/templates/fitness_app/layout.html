@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dracula">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,24 +8,204 @@
     <script src="{% static "js/htmx.min.js" %}"></script>
     <script src="{% static "js/messagehandling.js" %}"></script>
     {% comment %} <link rel="stylesheet" href="{% static "styles/styles.css" %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static "styles/output.css" %}">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+    <style>
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 45%;
+            background: #28a745; /* Success Green */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+    </style>
+
+    
 </head>
 
-<body>
-    {% comment %} navbar {% endcomment %}
+<body class="flex flex-col min-h-screen bg-base-100 text-base-content">
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="flex-1 flex items-center gap-2">
+            <a href="{% url "home" %}" class="btn btn-ghost text-xl"> HOME </a>
+
+                {% comment %} toggle {% endcomment %}
+            <div class="flex items-center">
+                <label class="swap swap-rotate btn btn-ghost btn-circle">
+                    
+                    <input type="checkbox" id="theme-switcher" />
+                    
+                    <svg class="swap-on fill-current w-6 h-6" xmlns="http://w3.org" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,0-1.41L4.93,4.93a1,1,0,0,0-1.41,1.41L4.22,7.05A1,1,0,0,0,5.64,7.05ZM17,5.64a1,1,0,0,0,.71.71l.71-.71a1,1,0,0,0-1.41-1.41l-.71.71A1,1,0,0,0,17,5.64ZM12,6a6,6,0,1,0,6,6A6,6,0,0,0,12,6Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,12,16Zm7-5H18a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-4.36,6a1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41l-.71.71A1,1,0,0,0,14.64,17ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Z"/></svg>
+                    
+                    <svg class="swap-off fill-current w-6 h-6" xmlns="http://w3.org" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2.11A1,1,0,0,0,8.16,2.22,10.12,10.12,0,0,0,2,12,10.12,10.12,0,0,0,12,22a10.08,10.08,0,0,0,9.78-7.39A1,1,0,0,0,21.64,13Zm-9.64,7a8.05,8.05,0,0,1-8-8A8.07,8.07,0,0,1,9,4.12,10.12,10.12,0,0,0,8.23,6.86,10.15,10.15,0,0,0,17.14,15.77,8.53,8.53,0,0,1,12,20Z"/></svg>
+
+                </label>
+            </div>
+        </div>
+
+      
+
+         {% if  user.is_authenticated %}
+         <div class="flex-none">
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button"class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="Tailwind CSS Navbar component">
+                    </div>
+                </div>
+                <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    <li class="justify-between"> 
+                        <a href="{% url "profile" %}"> 
+                            profile
+                        </a>   
+                    </li>
+                    <li>
+                        <form action="{% url "logout" %}" method='post'>
+                            {% csrf_token %}
+                             <button type="submit"> Logout </button>
+                         </form>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        
+        {% else %}
+         <div class="flex-none">
+            <a href="{% url "register" %}" class="btn btn-ghost"> sign up</a>
+    
+        </div>
+         <div class="flex-none">
+            <a href="{% url "login" %}" class="btn btn-ghost"> Login</a>
+    
+        </div>
+        {% endif %}
+       
+    </div>
+
+    {% comment %} message container {% endcomment %}
        <div id="message_container">
         {% if messages %}
-            <div id='messages_container_inner'>
+            <div id='messages_container_inner' class="toast-message">
             {% for message in messages %}
-                <div>
-                    {{message}}
-                </div>
+            <div >
+                    <span>{{message}}</span>
+                    <button class="close-btn" onclick="dismissMessage('messages_container_inner')"> X </button>
+            </div>
             {% endfor %}    
             </div>
         {% endif %}
-     </div>
+     </div> 
 
-     <div class="container">
+     <div class="content-container w-full flex-grow">
         {% block content %}{% endblock content %}
      </div>
+
+    {% comment %} FOOTER     {% endcomment %}
+     <footer class="mt-auto border-t border-base-300 bg-base-100 ">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    
+                    {% comment %} YOUR APP LOGO, COPYRIGHT & CONTACT {% endcomment %}
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
+                         {% comment %} Logo  {% endcomment %}
+                        <div class="flex items-center gap-2">
+                            {% comment %} Simple Geometric Logo: Square with letter inside {% endcomment %}
+                            <div class="w-7 h-7 bg-primary rounded-md flex items-center justify-center text-primary-content font-extrabold text-sm">
+                                F
+                            </div>
+                            <div>
+                                <span class="font-bold text-sm text-base-content">FitTracker</span>
+                                <p class="text-xs text-base-content/40">© 2026. All rights reserved.</p>
+                            </div>
+                        </div>
+
+                        <div class="hidden sm:block border-l border-base-300 h-8"></div>
+
+                        {% comment %} CONTACT SECTION {% endcomment %}
+                        <div class="flex flex-col items-center sm:items-start">
+                            <span class="text-xs text-base-content/40 font-bold uppercase tracking-wider">Contact</span>
+                            <a href="mailto:valaocodes@gmail.com" class="text-xs font-semibold text-primary hover:underline mt-0.5">
+                                val.async@gmail.com
+                            </a>
+                        </div>
+                    </div>
+
+                    {% comment %} RIGHT: STACK TECH LOGOS  {% endcomment %}
+                    <div class="flex flex-col items-center md:items-end gap-2">
+                        {% comment %} <span class="text-xs text-base-content/40 font-bold uppercase tracking-wider">Engineered With</span> {% endcomment %}
+                        
+                        <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-base-content/70">
+                            
+                            {% comment %} django {% endcomment %}
+                            <div class="flex items-center gap-1">
+                                <!-- Official Green / High Contrast styled D block -->
+                                <svg class="w-4 h-4 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor" opacity="0.15"></rect>
+                                    <path d="M8 8h4c2.2 0 4 1.8 4 4s-1.8 4-4 4H8V8z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M11 8v8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <span>Django</span>
+                            </div>
+
+                            <span class="text-base-content/20">|</span>
+
+                            {% comment %} Tailwind {% endcomment %}
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/>
+                                    <path d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+                                </svg>
+                                <span>Tailwind v4</span>
+                            </div>
+
+                            <span class="text-base-content/20">|</span>
+
+                            {% comment %} daisyUI  {% endcomment %}
+                            <div class="flex items-center gap-1">
+                                <span class="text-primary text-sm">🌼</span>
+                                <span>daisyUI 5</span>
+                            </div>
+
+                            <span class="text-base-content/20">|</span>
+
+                            {% comment %} Postgres {% endcomment %}
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                    <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path>
+                                </svg>
+                                <span>Postgres</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+    </footer>
+
+
+    <script src="{% static "js/themeswitch.js" %}"></script>
+
 </body>
 </html>

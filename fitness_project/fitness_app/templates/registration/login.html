@@ -4,37 +4,27 @@
 
 {% block content %}
 
-<h1> Login </h1>
+<div class="login register_container w-full max-w-md mx-auto mt-10 p-6 bg-base-200 rounded-box"> 
+    {% if form.errors %}
+    {% comment %} <p>Your username and password didn't match. Please try again.</p> {% endcomment %}
+    {% comment %} {{form.non_field_errors}} {% endcomment %}
+    {% endif %}
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+ 
+
+    {{form}}
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-primary"> Login </button>
 
 
+    {# Assumes you set up the password_reset view in your URLconf #}
+    {% comment %} <p><a href="{% url 'password_reset' %}">Lost password?</a></p> {% endcomment %}
 
-<form action="" method="post">
-    {% csrf_token %}
-    <table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="hidden" name="next" value="{{ next }}">
-<input type="submit" value="login">
-
-</form>
-
-{# Assumes you set up the password_reset view in your URLconf #}
-{% comment %} <p><a href="{% url 'password_reset' %}">Lost password?</a></p> {% endcomment %}
-
-</form>
-
+    </form>
+</div>
 
 
 {% endblock content %}

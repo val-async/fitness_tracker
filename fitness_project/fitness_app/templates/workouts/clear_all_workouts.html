@@ -3,11 +3,12 @@
 {% block title %} Clear workouts{% endblock title %}
 
 {% block content %}
-
+<div class="partial-form-wrapper mt-15 ml-10">
     <form action="" method="post">
         {% csrf_token %}
-        <button type="submit"> Delete all</button>
-        <a href="{% url "workout_view" %}"> Go back</a>
+        <button type="submit" class="btn-remove btn-sm"> Delete all</button>
+        <a href="{% url "workout_view" %}" class="btn btn-primary"> Go back</a>
     </form>
+</div>
 
 {% endblock content %}

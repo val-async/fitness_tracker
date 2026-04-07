@@ -1,0 +1,30 @@
+<div class="partial-form-wrapper">
+    <form hx-post="{% url "log_cardio" session_id cardio.id %}" hx-target="#message_container">
+        
+        {% csrf_token %}
+        
+        {% comment %} used a table because my global input styling kept getting in the way {% endcomment %}
+        <table>
+            <tr>
+                <td>{{form.hours.label}}</td>
+                <td>{{form.minutes.label}}</td>
+                <td>{{form.seconds.label}}</td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.hours}}
+                </td>
+                <td>{{form.minutes}}</td>
+                <td>{{form.seconds}}</td>
+            </tr>
+        </table>
+
+        {{form.notes}}
+        <button type="submit" class="btn-add"> Add </button>
+
+        <button class="btn btn-secondary btn-xs btn-soft">
+            <a href="{% url 'log_workout' session.workout.id %}"> cancel </a>
+        </button>
+
+    </form>
+</div>

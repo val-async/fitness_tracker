@@ -15,6 +15,14 @@ urlpatterns = [
     path('clear_all_workouts',views.clear_all_workouts,name='clear_all_workouts'),
     path('register',views.register_view,name='register'),
     path('profile/',views.profile_view,name='profile'),
-    path('login/',LoginView.as_view(), name='login'),
+    path('login',views.MyLoginView.as_view(), name='login'),
     path('logout/',LogoutView.as_view(),name='logout'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('log_workout/<int:workout_id>/',views.log_workout,name="log_workout"),
+    path('log_exercise/<int:session_id>/<int:exercise_id>/',views.log_exercise,name="log_exercise"),
+    path('add_cardio_to_workout/<int:workout_id>',views.add_cardio_to_workout,name="add_cardio_to_workout"),
+    path('update_cardio/<int:cardio_id>/',views.add_cardio_to_workout,name='update_cardio'),
+    path('cardio_delete/<int:cardio_id>/',views.add_cardio_to_workout,name='cardio_delete'),
+    path('log_cardio/<int:session_id>/<int:cardio_id>/',views.log_cardio,name="log_cardio"),
+    path('Profile_update_view',views.Profile_update_view,name="Profile_update_view")
 ]

@@ -3,27 +3,109 @@
 {% block title %} Home page{% endblock title %}
 
 {% block content %}
-    <h1>Welcome : user</h1>
-    
-    {% if  user.is_authenticated %}
-    <h2> welcome {{user}} </h2>
-    
-    {% else %}
-    <div class="sign-up">
+    {% comment %} <div class="home-container mx-3 mt-10 p-6 bg-base-100 ">
+        <h1>Welcome : user</h1>    
         <button>
-            <a href="{% url "register" %}"> sign up</a>
+            <a href="{% url "workout_view" %}"> View Workouts </a>
         </button>
-
-        <span>
-            <button> 
-                <a href="{% url "login" %}"> Login</a>
-            </button>
-        </span>
+    </div> {% endcomment %}
+<!-- LANDING HERO SECTION -->
+<div class="bg-base-100 text-base-content min-h-[70vh] flex flex-col items-center justify-center px-4 pt-16 pb-8">
+    <div class="max-w-3xl text-center space-y-6">
+        <!-- Badge -->
+        <div class="badge badge-outline badge-sm mx-auto tracking-wider uppercase">FitTracker 1.0</div>
+        
+        <!-- Main Pitch -->
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+            Simple. Calibrated. Precise.
+        </h1>
+        
+        <!-- Subheading -->
+        <p class="text-base-content/70 text-lg md:text-xl max-w-2xl mx-auto">
+            Log your workouts, track your duration, and map it out. A minimalist tracker designed to keep you focused on performance, not bloat.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-wide font-bold">
+                Get Started For Free
+            </a>
+            <a href="#demo" class="btn btn-outline btn-wide font-bold">
+                See How It Works
+            </a>
+        </div>
     </div>
-    {% endif %}
-    <button>
-        <a href="{% url "workout_view" %}"> View Workouts </a>
-    </button>
+</div>
 
+<!-- MOCKUP BROWSER CONTAINER -->
+<div id="demo" class="bg-base-200 py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+        
+        <!-- Section Header -->
+        <div class="text-center mb-10">
+            <h2 class="text-2xl font-bold mb-2">Inside the Application</h2>
+            <p class="text-base-content/60 text-sm">Previewing the live tracking dashboard</p>
+        </div>
+
+        <!-- DaisyUI Mockup Browser -->
+        <div class="mockup-browser bg-base-100 border border-base-300 shadow-sm">
+            <!-- Simulated Browser URL bar -->
+            <div class="mockup-browser-toolbar">
+                <div class="input border border-base-200 text-xs text-base-content/50">
+                    https://fittracker.app
+                </div>
+            </div>
+            
+            <!-- Simulated Dashboard Content (We shrink it and put clean placeholders) -->
+            <div class="bg-base-200 p-6 space-y-6">
+                
+                <!-- Mock Header inside the browser -->
+                <div class="flex justify-between items-center bg-base-100 p-4 rounded-box border border-base-300">
+                    <div>
+                        <h3 class="font-bold text-sm">Welcome back, User!</h3>
+                        <div class="text-xs text-base-content/50">Viewing your weekly summary</div>
+                    </div>
+                    <div class="badge badge-success badge-sm">Status: Active</div>
+                </div>
+
+                <!-- Mock Stats grid -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-base-100 p-4 rounded-box border border-base-300 text-center">
+                        <div class="text-xs text-base-content/50">Workouts</div>
+                        <div class="text-lg font-bold text-primary">12</div>
+                    </div>
+                    <div class="bg-base-100 p-4 rounded-box border border-base-300 text-center">
+                        <div class="text-xs text-base-content/50">Streak</div>
+                        <div class="text-lg font-bold text-secondary">5 Days</div>
+                    </div>
+                    <div class="bg-base-100 p-4 rounded-box border border-base-300 text-center">
+                        <div class="text-xs text-base-content/50">Target</div>
+                        <div class="text-lg font-bold text-accent">80%</div>
+                    </div>
+                </div>
+
+                <!-- Mock Chart Area -->
+                <div class="bg-base-100 p-4 rounded-box border border-base-300">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="font-bold text-xs">Activity Progress</div>
+                        <div class="text-xs text-base-content/50">Past 7 days</div>
+                    </div>
+                    <!-- Minimal graph representation using flex bars -->
+                    <div class="h-32 flex items-end justify-around gap-2 bg-base-200 p-4 rounded-box">
+                        <div class="bg-primary/50 w-full h-[30%] rounded-sm"></div>
+                        <div class="bg-primary/50 w-full h-[50%] rounded-sm"></div>
+                        <div class="bg-primary/50 w-full h-[45%] rounded-sm"></div>
+                        <div class="bg-primary w-full h-[85%] rounded-sm"></div>
+                        <div class="bg-primary/50 w-full h-[60%] rounded-sm"></div>
+                        <div class="bg-primary/50 w-full h-[40%] rounded-sm"></div>
+                        <div class="bg-primary/50 w-full h-[70%] rounded-sm"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+</div>
  
 {% endblock content %}

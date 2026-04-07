@@ -1,0 +1,173 @@
+{% extends "fitness_app/layout.html" %}
+
+{% block <title></title> %} Dashboard {% endblock <title></title> %}
+
+{% block content %}
+
+
+<div class="p-6 max-w-7xl mx-auto">
+
+    {% comment %} HERO / WELCOME HEADER {% endcomment %}
+    <div class="hero bg-base-100 rounded-box shadow mb-6 p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between w-full gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-base-content">
+                    Welcome back, {{ user.username }}! 👋
+                </h1>
+                <p class="text-base-content/60 mt-1">Here is a look at your current fitness progress.</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url "workout_view" %}" class="btn btn-primary btn-sm md:btn-md">
+                    View Routine
+                </a>
+                <a href="{% url 'Profile_update_view' %}" class="btn btn-outline btn-sm md:btn-md">
+                    Update Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} MAIN GRID CONTAINER {% endcomment %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {% comment %} STATS & PROGRESS {% endcomment %}
+        <div class="md:col-span-2 space-y-6">
+            
+            {% comment %} STATS ROW {% endcomment %}
+            <div class="stats stats-vertical lg:stats-horizontal shadow bg-base-100 w-full">
+                <div class="stat">
+                    <div class="stat-title text-base-content/60">Workouts</div>
+                    <div class="stat-value text-primary">{{ workouts_completed }}</div>
+                    <div class="stat-desc text-base-content/50">Total this month</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-title text-base-content/60">Active Streak</div>
+                    <div class="stat-value text-secondary">
+                        {% if profile.get_current_streak is None %}
+                            0 
+                        {% else %}
+                            {{ profile.get_current_streak }} 🔥
+                        {% endif %}
+
+                    </div>
+                    <div class="stat-desc text-base-content/50">Consecutive days</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-title text-base-content/60">Current weight</div>
+                    <div class="stat-value text-accent">
+                        {% if profile.target_weight %}
+                            {{ profile.target_weight }} kg
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <div class="stat-desc text-base-content/50">
+                        <span> starting weight </span>
+                        {% if profile.starting_weight %}
+                            {{profile.starting_weight}} kg
+                            {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+           {% comment %} CHARTS  {% endcomment %}
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="card-title text-lg font-bold">Activity Progress</h2>
+                        <div class="badge badge-soft badge-info">This Week</div>
+                    </div>
+                    {% comment %} chart container {% endcomment %}
+                    <div class="h-64 bg-base-200 rounded-box flex items-center justify-center border-2 border-dashed border-base-300">
+                        <p class="text-base-content/40 text-center text-sm">
+
+                            {% comment %} <span class="font-bold">Chart Area</span><br>
+                            (will integrate Chart.js or ApexCharts here later) {% endcomment %}
+                            <div id="workout-chart"></div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+       {% comment %} RIGHT COLUMN: PROFILE & SIDEBAR {% endcomment %}
+        <div class="space-y-6">
+            
+            {% comment %} USER DETAILS CARD {% endcomment %}
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-lg font-bold mb-2">User Profile</h2>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-base-200 pb-2">
+                            <span class="text-base-content/60 text-sm">Username</span>
+                            <span class="font-medium text-sm">{{ user.username }}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-base-200 pb-2">
+                            <span class="text-base-content/60 text-sm">Age</span>
+                            <span class="font-medium text-sm">
+                                {% if profile.age %}{{ profile.age }} years{% else %}N/A{% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-base-200 pb-2">
+                            <span class="text-base-content/60 text-sm">Account Status</span>
+                            <span class="badge badge-soft badge-success badge-sm">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% comment %} RECENT HISTORY PLACEHOLDER {% endcomment %}
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-lg font-bold mb-2">Recent Activities</h2>
+                    
+                    {% comment %} using daisyUI menu / simple divs to act as small feed blocks  {% endcomment %}
+                     
+                     
+                    <div class="space-y-3">
+                        {% if  last_two_workout_sessions%}
+
+                            {% for session in last_two_workout_sessions.all %}
+
+                            <div class="p-3 bg-base-200 rounded-lg flex justify-between items-center text-sm">
+                                <div>
+                                    <p class="font-semibold">{{session.workout.split}}</p>
+                                    <p class="font-semibold">{{session.workout.focus}}</p>
+                                    <p class="text-xs text-base-content/50">{{session.duration}}</p>
+                                    <span> {{session.date|date:"M/d H:m"}}</span>
+                                </div>
+                                <span class="text-primary font-bold">Done</span>
+                            </div>
+
+                            {% endfor %}
+
+                        {% else %}
+                            {% comment %} <div class="p-3 bg-base-200 rounded-lg flex justify-between items-center text-sm">
+                                <div>
+                                    <p class="font-semibold"></p>
+                                    <p class="text-xs text-base-content/50">30 mins • 3 days ago</p>
+                                </div>
+                                <span class="text-primary font-bold">Done</span>
+                            </div> {% endcomment %}
+                        {% endif %}
+                        
+                      
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

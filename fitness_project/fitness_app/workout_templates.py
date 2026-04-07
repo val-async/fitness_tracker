@@ -1,5 +1,7 @@
 from .models import Exercise,Workout
 import random
+
+
 from .exercise_list import chest_workouts,shoulder_workouts,tricep_workouts,back_workouts,bicep_workouts,leg_workouts,ab_workouts
 
 #templates
@@ -41,9 +43,10 @@ def add_exercies_to_workout_split(workout_list : list, workout_split: Workout):
         new_exercise.save()
         workout_split.exercises.add(new_exercise)
 
-def ppl_template():
+def ppl_template(user):
     #pick push exercises and add to workout model
     push_workout = Workout(split='push day')
+    push_workout.user = user
     push_workout.save()
 
     picked_chest_workouts = random.sample(chest_workouts,3)
@@ -57,6 +60,7 @@ def ppl_template():
 
     #pick pull exercise and add to workout model
     pull_workout = Workout(split='pull day')
+    pull_workout.user = user
     pull_workout.save()
 
     picked_back_workouts = random.sample(back_workouts, 4)
@@ -67,6 +71,7 @@ def ppl_template():
 
     #pick leg and ab exercises
     leg_day = Workout(split="leg day")
+    leg_day.user = user
     leg_day.save()
 
     picked_legs_and_abs_workout = random.sample(leg_workouts,3) + random.sample(ab_workouts,1) + [('calf raises',3)]
@@ -74,8 +79,31 @@ def ppl_template():
     
 
 
-def ul_template():
+
+# def ul_template():
+#     upper_day = Workout(split='upper')
+#     upper_day.save()
+
+#     picked_upper_day_workouts = random.sample(chest_workouts,2) + random.sample(shoulder_workouts,2)+ random.sample(bicep_workouts,1) + random.sample(back_workouts,2) + random.sample(tricep_workouts,1)
+
+#     add_exercies_to_workout_split(picked_upper_day_workouts,upper_day)
+
+#     #pick lower day workouts
+
+#     lower_day = Workout(split='lower')
+#     lower_day.save()
+
+#     picked_lower_day_workouts = random.sample(leg_workouts,4) + random.sample(ab_workouts,2)  + [('calf raises',3)]
+#     add_exercies_to_workout_split(picked_lower_day_workouts,lower_day)
+
+#     #return an array so i can assign user id for each workout in my view
+
+#     return upper_day,lower_day
+
+def ul_template(user):
+    
     upper_day = Workout(split='upper')
+    upper_day.user = user
     upper_day.save()
 
     picked_upper_day_workouts = random.sample(chest_workouts,2) + random.sample(shoulder_workouts,2)+ random.sample(bicep_workouts,1) + random.sample(back_workouts,2) + random.sample(tricep_workouts,1)
@@ -85,6 +113,7 @@ def ul_template():
     #pick lower day workouts
 
     lower_day = Workout(split='lower')
+    lower_day.user = user
     lower_day.save()
 
     picked_lower_day_workouts = random.sample(leg_workouts,4) + random.sample(ab_workouts,2)  + [('calf raises',3)]

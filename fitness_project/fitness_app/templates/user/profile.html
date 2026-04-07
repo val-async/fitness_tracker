@@ -1,11 +1,64 @@
 {% extends "fitness_app/layout.html" %}
 
-{% block title %} profile {% endblock title %}
+{% block title %}Account Settings — FitTracker{% endblock title %}
 
 {% block content %}
+<div class="max-w-3xl mx-auto p-6 space-y-8 text-sm">
+    
+    {% comment %} Header {% endcomment %}
+    <Header class="pb-2 border-b border-base-300">
+        <h1 class="text-xl font-extrabold tracking-tight">Profile</h1>
+        <a href="{% url "Profile_update_view" %}"> update profile </a>
+        {% comment %} <p class="text-base-content/50 text-xs mt-1">Manage parameters and display preferences.</p> {% endcomment %}
+    </Header>
 
-<h1> profile reached</h1>
+    
+    <section>
+        <div class="text-xs font-bold text-base-content/40 uppercase tracking-wider mb-2">Identity</div>
+        <div class="border-t border-base-300">
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Username</span>
+                <span class="font-semibold">@{{ user.username }}</span>
+            </div>
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Joined</span>
+                <span class="font-semibold">{{ user.date_joined|date:"F Y" }}</span>
+            </div>
+        </div>
+    </section>
 
-<a href="{% url "home" %}"> home </a> <span> |</span>
-<a href="{% url "workout_view" %}"> Workouts </a>
+    {% comment %} Stats {% endcomment %}
+    <section>
+        <div class="text-xs font-bold text-base-content/40 uppercase tracking-wider mb-2">Stats</div>
+        <div class="border-t border-base-300">
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Height</span>
+                <span class="font-semibold">{{ user.height|default:"--" }} cm</span>
+            </div>
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Age</span>
+                <span class="font-semibold">{{ profile.age|default:"NIL" }} y</span>
+            </div>
+        </div>
+    </section>
+
+    {% comment %} More Stats  {% endcomment %}
+    <section>
+        <div class="text-xs font-bold text-base-content/40 uppercase tracking-wider mb-2">Information</div>
+
+        <div class="border-t border-base-300">
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">starting weight</span>
+                <button class="text-primary text-xs font-bold hover:underline">{{profile.starting_weight}}</button>
+            </div>
+
+             <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Goal weight</span>
+                <button class="text-primary text-xs font-bold hover:underline">{{profile.target_weight}}</button>
+            </div>
+
+        </div>
+    </section>
+
+</div>
 {% endblock content %}

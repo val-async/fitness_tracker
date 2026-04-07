@@ -1,0 +1,191 @@
+{% extends "fitness_app/layout.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-base-300 p-4 lg:p-10">
+    
+    {% comment %} Top Header & Stats {% endcomment %}
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10">
+        <div>
+            <h1 class="text-5xl font-black text-primary italic tracking-tighter uppercase">{{ workout.split }}</h1>
+            <div class="flex gap-3 mt-3">
+                <span class="badge badge-outline opacity-50 font-mono">#{{ session_id }}</span>
+                <span class="badge badge-primary font-bold tracking-widest text-[10px]">ACTIVE SESSION</span>
+            </div>
+        </div>
+
+       {% comment %} The Progress Stats  {% endcomment %}
+        <div class="stats bg-base-100 shadow-2xl border border-base-content/5 overflow-hidden">
+            <div class="stat px-8">
+                <div class="stat-title text-xs font-bold opacity-40 uppercase tracking-widest">Exercises</div>
+                <div class="stat-value text-primary text-3xl">{{ workout.exercises.count }}</div>
+            </div>
+            <div class="stat px-8 bg-base-200/30">
+                <div class="stat-title text-xs font-bold opacity-40 uppercase tracking-widest">Progress</div>
+                <div class="stat-value text-accent text-3xl">{{ unique_completed|length}}/{{ workout.exercises.count }}</div>
+                {% comment %} <div class="stat-desc text-[10px] mt-1 font-bold">{{ workout.exercises.count|add:"-unique_completed"|length }} Remaining</div>  {% endcomment %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {% comment %} if cardio  {% endcomment %}
+
+        {% if workout.cardio %}
+        
+               <div class="lg:col-span-8 space-y-6">
+            {% for cardio in workout.cardio.all %}
+            <div class="card bg-base-100 shadow-2xl border border-base-content/5 transition-all hover:border-primary/20">
+                <div class="card-body p-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-5">
+                            
+                            <div>
+                                <h3 class="card-title text-xl font-black tracking-tight">{{ cardio.cardio_type }}</h3>
+                                {% comment %} Your Status Text logic {% endcomment %}
+
+                                {% comment %} <p class="text-[10px] font-bold uppercase tracking-widest {% if exercise.id in completed_ids %}text-success{% else %}opacity-30{% endif %}">
+                                    {% if exercise.id in completed_ids %}Status: Optimized{% else %}Status: Awaiting Data{% endif %}
+                                </p> {% endcomment %}
+                            </div>
+                        </div>
+
+                        <button hx-get="{% url "log_cardio" session_id cardio.id %}"
+                                hx-target="#form-{{ cardio.id }}"
+                                hx-swap="innerHTML"
+                                class="btn {% if cardio.id in completed_ids %}
+                                                btn-ghost btn-outline border-success/20 text-success
+                                            {% else %}
+                                                btn-accent shadow-lg shadow-secondary/20
+                                            {% endif %} 
+                                    btn-sm md:btn-md">
+                            {% if cardio.id in completed_ids %}
+                                Edit Sets
+                            {% else %}
+                                Log cardio
+                            {% endif %}
+                        </button>
+                    </div>
+
+                     {% comment %} HTMX Form Injection Point {% endcomment %}
+                    <div id="form-{{ cardio.id }}" class="w-full mt-2"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} {% comment "" %} IF BLOCK, CARDIO{% endcomment %}
+
+        {% comment %} EXERCISES {% endcomment %}
+        <div class="lg:col-span-8 space-y-6">
+            {% for exercise in workout.exercises.all %}
+            <div class="card bg-base-100 shadow-2xl border border-base-content/5 transition-all hover:border-primary/20">
+                <div class="card-body p-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-5">
+                            
+                            <div>
+                                <h3 class="card-title text-xl font-black tracking-tight">{{ exercise.exercise_name }}</h3>
+                                {% comment %} Your Status Text logic {% endcomment %}
+                                <p class="text-[10px] font-bold uppercase tracking-widest {% if exercise.id in completed_ids %}text-success{% else %}opacity-30{% endif %}">
+                                    {% if exercise.id in completed_ids %}Status: Optimized{% else %}Status: Awaiting Data{% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <button hx-get="{% url 'log_exercise' session_id exercise.id %}"
+                                hx-target="#form-{{ exercise.id }}"
+                                hx-swap="innerHTML"
+                                class="btn {% if exercise.id in completed_ids %}
+                                                btn-ghost btn-outline border-success/20 text-success
+                                            {% else %}
+                                                btn-accent shadow-lg shadow-secondary/20
+                                            {% endif %} 
+                                    btn-sm md:btn-md">
+                            {% if exercise.id in completed_ids %}
+                                Edit Sets
+                            {% else %}
+                                Log Exercise
+                            {% endif %}
+                        </button>
+                    </div>
+
+                     {% comment %} HTMX Form Injection Point {% endcomment %}
+                    <div id="form-{{ exercise.id }}" class="w-full mt-2"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+       {% comment %} session section  {% endcomment %}
+        <div class="lg:col-span-4">
+            <div class="sticky top-8 space-y-6">
+                
+                 {% comment %} Finish Session Card {% endcomment %}
+                <div class="card bg-primary text-primary-content shadow-2xl overflow-hidden">
+                    <div class="card-body p-8">
+                        <h2 class="text-3xl font-black italic tracking-tighter mb-6">COMPLETE</h2>
+                        <form action="" method="post" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div class="form-control">
+                                <label class="label pt-0">
+                                    <span class="label-text text-primary-content/60 font-bold text-[10px] uppercase tracking-[0.2em]">Total Duration</span>
+                                </label>
+                                {% comment %} Apply input-ghost or similar in forms.py widget  {% endcomment %}
+                                {{ log_workout_session_form.duration }}
+                            </div>
+
+                            <button type="submit" class="btn btn-neutral btn-block btn-lg font-black tracking-widest shadow-2xl">
+                                SAVE WORKOUT
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Recent Workout Log Section -->
+                <div class="card bg-base-100 border border-base-content/5 shadow-xl">
+                    <div class="p-5 border-b border-base-content/5 flex justify-between items-center bg-base-200/50">
+                        <h3 class="font-black text-[10px] uppercase tracking-widest opacity-60">History: {{ workout.split }}</h3>
+                        <span class="text-[10px] font-bold text-primary">Last 3</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-zebra w-full">
+                            <tbody>
+                                {% for session in workout.workout_logs.all|slice:":3" %}
+                                <tr class="border-none">
+                                    <td class="text-xs font-bold opacity-70">{{ session.date|date:"M d" }}</td>
+                                    <td class="text-xs text-right font-mono text-secondary">{{ session.duration }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling the duration input */
+    input[name="duration"] {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        font-family: monospace;
+        font-size: 1.5rem;
+        font-weight: 900;
+        text-align: center;
+    }
+    input[name="duration"]:focus {
+        outline: none;
+        border-color: white;
+        background: rgba(255, 255, 255, 0.15);
+    }
+</style>
+{% endblock content %}
