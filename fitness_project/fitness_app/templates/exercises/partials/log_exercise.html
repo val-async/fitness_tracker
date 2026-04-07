@@ -50,7 +50,15 @@
                     </table>
                 </div>
             </div>
-            
+                {% comment %} ACTIONS  {% endcomment %}
+            <div class="flex justify-end items-center gap-4 mt-8 pt-4 border-t border-base-content/5">
+                <a href="{% url 'log_workout' session.workout.id %}" class="btn btn-ghost btn-sm text-error font-bold">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary btn-sm px-8 font-black italic tracking-widest shadow-lg shadow-primary/20">
+                    SAVE LOG
+                </button>
+            </div>
              {% comment %} DIVIDER {% endcomment %}
             <div class="divider lg:divider-horizontal opacity-20">VS</div>
 
@@ -92,15 +100,8 @@
             
         </div>
 
-         {% comment %} ACTIONS  {% endcomment %}
-        <div class="flex justify-end items-center gap-4 mt-8 pt-4 border-t border-base-content/5">
-            <a href="{% url 'log_workout' session.workout.id %}" class="btn btn-ghost btn-sm text-error font-bold">
-                Cancel
-            </a>
-            <button type="submit" class="btn btn-primary btn-sm px-8 font-black italic tracking-widest shadow-lg shadow-primary/20">
-                SAVE LOG
-            </button>
-        </div>
+     
+
     </form>
 </div>
 
@@ -109,4 +110,5 @@
     #log-exercise-form input {
         @apply input input-ghost input-xs w-full text-center bg-base-200/50 focus:bg-base-100 focus:text-primary transition-all font-mono font-bold;
     }
+
 </style>

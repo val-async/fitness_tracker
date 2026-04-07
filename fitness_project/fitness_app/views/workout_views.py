@@ -89,14 +89,31 @@ def log_workout(request, workout_id):
     workout = Workout.objects.get(id=workout_id)
     profile = get_object_or_404(Profile, user = request.user)
 
-    session = WorkoutSession.objects.filter(workout_id=workout_id,is_active=True).order_by('-date').first()
+    # session = WorkoutSession.objects.filter(workout_id=workout_id,is_active=True).order_by('-date').first()
+    # session = WorkoutSession.objects.filter(user=request.user, workout=workout,is_active=True).order_by('-date').first()
 
-    # create session
-    if not session:
-        session,created = WorkoutSession.objects.get_or_create(
-            user = request.user,
-            workout = workout,
-            duration = timedelta(0)
+    # # create session
+    # if not session:
+    #     session,created = WorkoutSession.objects.get_or_create(
+    #         user = request.user,
+    #         workout = workout,
+    #         duration = timedelta(0)
+    #     )
+        
+    session = WorkoutSession.objects.filter(user=request.user, is_active=True).first()
+    if session:
+        # User already has an active session
+        if session.workout.id != workout.id:
+            # It's a different workout, prevent starting
+            messages.error(request, f"You already have an active session for {session.workout.split}. Finish it first!")
+            return redirect('workout_view')
+        # else: same workout, resume this session
+    else:
+        # No active session, create a new one
+        session = WorkoutSession.objects.create(
+            user=request.user,
+            workout=workout,
+            duration=timedelta(0)
         )
 
     completed_ids = session.exercise_logs.values_list('exercise_id', flat=True)

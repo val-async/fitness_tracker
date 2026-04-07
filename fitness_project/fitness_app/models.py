@@ -1,14 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.conf import settings
+from django.conf import settings 
 from datetime import date,timedelta
 from django.utils import timezone
+from django.db.models import Q
+from django.core.exceptions import ValidationError
+
+# to handle duaration validations
+def validate_workout_duration(value):
+    if value > timedelta(hours=6):
+        raise ValidationError("Workouts cannot be longer than 6 hours.")
+    if value <= timedelta(seconds=0):
+        raise ValidationError("Workout duration must be greater than 0.")
 
 # Create your models here.
 class User(AbstractUser):
-    height = models.FloatField(null=True, blank=True)
-    age = models.IntegerField(null=True,blank=True)
-
+    pass
 
 class Exercise(models.Model):
     exercise_name = models.CharField(max_length=100)
@@ -60,12 +67,22 @@ class WorkoutSession(models.Model):
 
     class Meta:
         ordering = ['-date']
-
-    duration = models.DurationField()
+        #session constraint: enforce one active session per user,per workout
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'workout'],
+                condition=Q(is_active=True),
+                name='unique_active_session_per_user_workout'
+            )
+        ]
     is_active = models.BooleanField(default=True)
-    # calories_burned
+
+    duration = models.DurationField(validators=[validate_workout_duration])
 
     
+    # calories_burned
+        
+
 
 class ExerciseLogs(models.Model):
 
@@ -128,6 +145,7 @@ class Profile(models.Model):
     target_weight = models.DecimalField(max_digits=5, decimal_places=2, 
         null=True, blank=True)
     gender = models.CharField(max_length=2,choices=GENDER_CHOICES,null=True,blank=True)
+    height = models.DecimalField( max_digits=5, decimal_places=2, null=True, blank=True)
 
     # remove nulls
     current_streak = models.PositiveIntegerField(default=0)
@@ -191,4 +209,15 @@ class Profile(models.Model):
     @property
     def get_current_streak(self):
         return self.current_streak
+    
+    @property
+    def height_display(self):
+        if self.height:
+            return f"{self.height} cm"
+        return "Not set"
+    
+    @property
+    def get_height_in_ft(self):
+        pass
+
 

@@ -134,7 +134,7 @@
                                 </label>
                                 {% comment %} Apply input-ghost or similar in forms.py widget  {% endcomment %}
                                 {{ log_workout_session_form.duration }}
-                            </div>
+                            </div>                            
 
                             <button type="submit" class="btn btn-neutral btn-block btn-lg font-black tracking-widest shadow-2xl">
                                 SAVE WORKOUT
@@ -170,22 +170,29 @@
 
 <style>
     /* Styling the duration input */
-    input[name="duration"] {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 1rem;
-        border-radius: 0.75rem;
-        font-family: monospace;
-        font-size: 1.5rem;
-        font-weight: 900;
-        text-align: center;
-    }
-    input[name="duration"]:focus {
-        outline: none;
-        border-color: white;
-        background: rgba(255, 255, 255, 0.15);
-    }
+input[name="duration"] {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-align: center;
+
+    /* New: Force the container to center its internal parts */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Fix for Chrome/Safari: Centers the actual HH:MM text */
+input[name="duration"]::-webkit-datetime-edit {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
 </style>
 {% endblock content %}

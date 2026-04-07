@@ -55,9 +55,9 @@ class RegisterForm(forms.ModelForm):
   
     class Meta:
         model = User
-        fields = ['username','password','age','height']
+        fields = ['username','password']
 
-    field_order = ['username', 'password', 'password_confirm', 'age', 'height']
+    field_order = ['username', 'password', 'password_confirm']
 
 
     def clean(self):
@@ -87,6 +87,13 @@ class WorkoutSessionForm(forms.ModelForm):
     class Meta:
         model = WorkoutSession
         fields = ['duration']
+        widgets = {
+            'duration': forms.TextInput(attrs={
+                'type': 'time',
+                'step': '1', # allows seconds if you want them
+                'class': 'input input-bordered w-full'
+            })
+        }
 
 class CardioForm(forms.ModelForm):
     class Meta:
@@ -124,7 +131,7 @@ class CardioLogsForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['date_of_birth','starting_weight','target_weight','gender']
+        fields = ['date_of_birth','starting_weight','target_weight','gender','height']
 
         widgets={
             'starting_weight':forms.TextInput(attrs={'placeholder':"Weight in kg"}),
