@@ -12,6 +12,9 @@ db.sqlite3
 
 
 static/styles/output.css
+static/styles/tailwindcss
+
+
 
 Pipfile.lock
 
