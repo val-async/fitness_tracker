@@ -31,13 +31,20 @@
     <section>
         <div class="text-xs font-bold text-base-content/40 uppercase tracking-wider mb-2">Stats</div>
         <div class="border-t border-base-300">
+
+            <div class="flex justify-between items-center py-3 border-b border-base-200">
+                <span class="text-base-content/70">Email</span>
+                <span class="font-semibold">{{ profile.user.email|default:"--" }}</span>
+            </div>
+
             <div class="flex justify-between items-center py-3 border-b border-base-200">
                 <span class="text-base-content/70">Height</span>
                 <span class="font-semibold">{{ profile.height_display|default:"--" }}</span>
             </div>
+
             <div class="flex justify-between items-center py-3 border-b border-base-200">
                 <span class="text-base-content/70">Age</span>
-                <span class="font-semibold">{{ profile.age|default:"NIL" }} y</span>
+                <span class="font-semibold">{{ profile.age|default:"NIL" }} y</span> 
             </div>
         </div>
     </section>

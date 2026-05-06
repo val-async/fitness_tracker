@@ -119,7 +119,7 @@ def log_workout(request, workout_id):
     completed_ids = session.exercise_logs.values_list('exercise_id', flat=True)
     unique_completed = set(session.exercise_logs.values_list('exercise_id', flat=True))
     #forms
-    log_workout_session_form = WorkoutSessionForm(instance=session)
+    log_workout_session_form = WorkoutSessionForm(instance=session,)
     if request.method == 'POST':
         log_workout_session_form = WorkoutSessionForm(request.POST,instance=session)
         if log_workout_session_form.is_valid():

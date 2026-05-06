@@ -55,9 +55,9 @@ class RegisterForm(forms.ModelForm):
   
     class Meta:
         model = User
-        fields = ['username','password']
+        fields = ['username','password','email']
 
-    field_order = ['username', 'password', 'password_confirm']
+    field_order = ['username', 'email','password', 'password_confirm']
 
 
     def clean(self):
@@ -84,16 +84,36 @@ ExerciseLogsForm = inlineformset_factory(
 )
 
 class WorkoutSessionForm(forms.ModelForm):
+
+    hours = forms.IntegerField(min_value=0, initial=0, label="Hrs",widget=forms.NumberInput(attrs={'style': 'width: 50px;', 'placeholder': '00'}))
+    minutes = forms.IntegerField(min_value=0, max_value=59, initial=0, label="Mins",widget=forms.NumberInput(attrs={'style': 'width: 50px;', 'placeholder': '00'}))
+    seconds = forms.IntegerField(min_value=0, max_value=59, initial=0, label="Secs",widget=forms.NumberInput(attrs={'style': 'width: 50px;', 'placeholder': '00'})) 
+
     class Meta:
         model = WorkoutSession
-        fields = ['duration']
-        widgets = {
-            'duration': forms.TextInput(attrs={
-                'type': 'time',
-                'step': '1', # allows seconds if you want them
-                'class': 'input input-bordered w-full'
-            })
-        }
+        fields = []
+        
+        #override save method to conver input to timedelta
+    def clean(self):
+        cleaned_data = super().clean()
+        hours = cleaned_data.get('hours', 0) or 0
+        minutes = cleaned_data.get('minutes', 0) or 0
+        seconds = cleaned_data.get('seconds', 0) or 0
+
+        # Calculate total duration
+        total_duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+        # 1. Check for the 6-hour limit
+        if total_duration > timedelta(hours=6):
+            raise forms.ValidationError("Workouts cannot exceed 6 hours")
+
+        # 2. Prevent 0-second workouts
+        if total_duration.total_seconds() == 0:
+            raise forms.ValidationError("You have to actually work out for at least a second!")
+
+        # Save the combined duration back to the model field
+        self.instance.duration = total_duration
+        return cleaned_data
 
 class CardioForm(forms.ModelForm):
     class Meta:

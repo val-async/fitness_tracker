@@ -27,8 +27,6 @@ def register_view(request):
 @login_required
 def profile_view(request):
     profile = Profile.objects.get(user = request.user)
-    print('prof')
-    print(profile.age)
     return render(request,'user/profile.html',{'profile':profile})
 
 #configured Login view so i can push message

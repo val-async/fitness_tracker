@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="min-h-screen bg-base-300 p-4 lg:p-10">
+
+
+
     
     {% comment %} Top Header & Stats {% endcomment %}
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10">
@@ -133,8 +136,29 @@
                                     <span class="label-text text-primary-content/60 font-bold text-[10px] uppercase tracking-[0.2em]">Total Duration</span>
                                 </label>
                                 {% comment %} Apply input-ghost or similar in forms.py widget  {% endcomment %}
-                                {{ log_workout_session_form.duration }}
-                            </div>                            
+                                {% comment %} {{ log_workout_session_form.duration }} {% endcomment %}
+
+                                
+                                <div class="flex justify-center w-full py-4">
+                                    <table class="duration-input">
+                                        <!-- Label Row -->
+                                        <tr class="text-white">
+                                            <td><label>Hours</label></td>
+                                            <td></td> <!-- Colon Spacer -->
+                                            <td><label>Mins</label></td>
+                                            <td></td> <!-- Colon Spacer -->
+                                            <td><label>Secs</label></td>
+                                        </tr>
+                                        <!-- Input Row -->
+                                        <tr>
+                                            <td>{{ log_workout_session_form.hours }}</td>
+                                            <td class="text-2xl font-bold pb-2">:</td>
+                                            <td>{{ log_workout_session_form.minutes }}</td>
+                                            <td class="text-2xl font-bold pb-2">:</td>
+                                            <td>{{ log_workout_session_form.seconds }}</td>
+                                        </tr>
+                                    </table>
+                                </div>                       
 
                             <button type="submit" class="btn btn-neutral btn-block btn-lg font-black tracking-widest shadow-2xl">
                                 SAVE WORKOUT
@@ -169,30 +193,55 @@
 </div>
 
 <style>
-    /* Styling the duration input */
-input[name="duration"] {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
+/* 1. Center the table horizontally */
+.duration-input {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: separate;
+    border-spacing: 10px 0; /* Adds horizontal space between inputs */
+}
+
+/* 2. Style and widen the input fields */
+.duration-input td input {
+    width: 100px; /* Increase this number to make them wider */
+    min-width: 80px; 
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
     border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
     color: white;
-    padding: 1rem;
-    border-radius: 0.75rem;
     font-family: monospace;
     font-size: 1.5rem;
     font-weight: 900;
     text-align: center;
-
-    /* New: Force the container to center its internal parts */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    outline: none;
+    transition: all 0.2s ease;
 }
 
-/* Fix for Chrome/Safari: Centers the actual HH:MM text */
-input[name="duration"]::-webkit-datetime-edit {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+/* 3. Visual feedback on focus */
+.duration-input td input:focus {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
+
+/* 4. Center the labels above the inputs */
+.duration-input td:nth-child(odd) {
+    text-align: center;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+
 </style>
+
+{% comment %} <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const durationInput = document.querySelector('input[name="duration"]');
+        if (durationInput && (durationInput.value === "" || durationInput.value === "12:00")) {
+            durationInput.value = "00:00:00";
+        }
+    });
+</script> {% endcomment %}
 {% endblock content %}

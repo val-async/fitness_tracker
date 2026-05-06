@@ -4,14 +4,6 @@ from django.conf import settings
 from datetime import date,timedelta
 from django.utils import timezone
 from django.db.models import Q
-from django.core.exceptions import ValidationError
-
-# to handle duaration validations
-def validate_workout_duration(value):
-    if value > timedelta(hours=6):
-        raise ValidationError("Workouts cannot be longer than 6 hours.")
-    if value <= timedelta(seconds=0):
-        raise ValidationError("Workout duration must be greater than 0.")
 
 # Create your models here.
 class User(AbstractUser):
@@ -77,7 +69,20 @@ class WorkoutSession(models.Model):
         ]
     is_active = models.BooleanField(default=True)
 
-    duration = models.DurationField(validators=[validate_workout_duration])
+    duration = models.DurationField()
+
+    @property
+    def duration_display(self):
+        if not self.duration:
+            return "0m"
+            
+        total_seconds = int(self.duration.total_seconds())
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        
+        if hours > 0:
+            return f"{hours}h {minutes}m"
+        return f"{minutes}m"
 
     
     # calories_burned
